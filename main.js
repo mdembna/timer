@@ -1,52 +1,34 @@
+document.addEventListener('DOMContentLoaded', () => {
+function* timeGenerator(date) {
+  let time = [date.getHours(), date.getMinutes(), date.getSeconds()];
+  while (true) {  
+    yield time.map(el => el.toString().padStart(2, '0')).join(':');
 
-let date = new Date();
-let min = date.getMinutes();
-let sec = date.getSeconds();
-let hour = date.getHours();
-function* secondGenerator() {
-    let current = sec;
-    while (true) {  
-      yield current.toString().padStart(2, '0');
-      if (current < 59) {
-          current += 1;
+    if (time[2] < 59) {
+        time[2] += 1;
+    }
+    else {
+      time[2] = 0;
+      if (time[1] < 59) {
+          time[1] += 1
       }
       else {
-          current = 0;
-          min = minutes.next().value
+        time[1] = 0
+        if (time[0] < 23){
+            time[0] += 1
+        }
+        else {
+            time[0] = 0;
+        }
       }
     }
+  }
 }
-function* minutesGenerator() {
-    let current = min+ 1;
-    while (true) {  
-      yield current;
-      if (current < 59) {
-          current += 1;
-      }
-      else {
-          current = 0;
-          hour = hours.next().value
-      }
-    }
-}
-function* hoursGenerator() {
-    let current = hour + 1;
-    while (true) {  
-      yield current;
-      if (current < 23) {
-          current += 1;
-      }
-      else {
-          current = 0;
-      }
-    }
-}
-  
 
-  let seconds = secondGenerator();
-  let minutes = minutesGenerator();
-  let hours = hoursGenerator();
+let currentDate = new Date();
+let time = timeGenerator(currentDate);
 
   setInterval(() => {
-      document.getElementById("display").innerHTML = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}:${seconds.next().value}`
+      document.getElementById("display").innerHTML = time.next().value
   }, 1000)
+});
